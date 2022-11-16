@@ -47,23 +47,25 @@ static unop_builder *unop_builders[] = {
         [TOK_NEG] = neg
 };
 
-struct AST build_binop(struct ring_ast **ast_build, struct ring_token **ops) {
-    return *binop_builders[ring_token_pop(ops).type]
+struct AST* build_binop(struct ring_ast **ast_build, struct ring_token **ops) {
+    return binop_builders[ring_token_pop(ops).type]
             (newnode(ring_ast_pop(ast_build)),
              newnode(ring_ast_pop(ast_build)));
 }
 
-struct AST build_unop(struct ring_ast **ast_build, struct ring_token **ops) {
-    return *unop_builders[ring_token_pop(ops).type]
+struct AST* build_unop(struct ring_ast **ast_build, struct ring_token **ops) {
+    return unop_builders[ring_token_pop(ops).type]
             (newnode(ring_ast_pop(ast_build)));
 
 }
 
-struct AST build_op(struct ring_ast **ast_build, struct ring_token **ops, struct token operator) {
+struct AST *build_op(struct ring_ast **ast_build, struct ring_token **ops, struct token operator) {
     if(is_binop(operator)) {
         return build_binop(ast_build, ops);
     } else if(is_unop(operator)) {
         return build_unop(ast_build, ops);
+    } else {
+        return NULL;
     }
 }
 
@@ -84,7 +86,7 @@ struct AST *build_ast(char *str) {
                 if(PRECEDENCES[operator.type] < PRECEDENCES[tok.type])
                     break;
                 if(is_binop(operator) || is_unop(operator)) {
-                    ring_push_create(ast, ast_build, build_op(&ast_build, &ops, operator));
+                    ring_push_create(ast, ast_build, *build_op(&ast_build, &ops, operator));
                 } else {
                     break;
                 }
@@ -94,13 +96,13 @@ struct AST *build_ast(char *str) {
             ring_push_create(token, ops, tok);
         } else if (tok.type == TOK_CLOSE) {
             while ((ops != NULL) && ring_token_last(ops).type != TOK_OPEN) {
-                ring_push_create(ast, ast_build, build_op(&ast_build, &ops, ring_token_last(ops)));
+                ring_push_create(ast, ast_build, *build_op(&ast_build, &ops, ring_token_last(ops)));
             }
             ring_token_pop(&ops);
         }
     }
     while (ops != NULL) {
-        ring_push_create(ast, ast_build, build_op(&ast_build, &ops, ring_token_last(ops)));
+        ring_push_create(ast, ast_build, *build_op(&ast_build, &ops, ring_token_last(ops)));
     }
 
     struct AST *result = newnode(ring_ast_pop(&ast_build));

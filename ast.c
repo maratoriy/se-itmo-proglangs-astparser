@@ -125,7 +125,7 @@ static parser *ast_parsers[] = {
 
 int64_t calc_ast(struct AST *ast) {
     if (ast)
-        ast_parsers[ast->type](ast);
+        return ast_parsers[ast->type](ast);
     else
         return 0;
 }
