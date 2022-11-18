@@ -68,6 +68,7 @@ DECLARE_UNOP(fact, FACT)
 #undef DECLARE_UNOP
 
 void print_ast(FILE *f, struct AST *ast);
+void ast_print(struct AST ast);
 
 int64_t calc_ast(struct AST *ast);
 

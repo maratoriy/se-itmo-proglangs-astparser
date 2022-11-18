@@ -71,6 +71,10 @@ void print_ast(FILE *f, struct AST *ast) {
         fprintf(f, "<NULL>");
 }
 
+void ast_print(struct AST ast) {
+    print_ast(stdout, &ast);
+}
+
 typedef int64_t (parser)(struct AST *);
 
 // UNOP TYPE
