@@ -6,6 +6,6 @@ In current version:
     - '&&', '||', '~', '->, '<->'
   - math operators:
     - '*', '/', '+', '-', '%'
-  - unary operators:
-    - '%', '!'(factorial)
+  - unary math operators:
+    - '-', '!'(factorial)
   - brackets '(' and ')'
