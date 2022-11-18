@@ -37,9 +37,9 @@ static unop_builder *unop_builders[] = {
 };
 
 static struct AST *build_binop(struct ring_ast **ast_build, struct token operator) {
-    return binop_builders[operator.type]
-            (newnode(ring_ast_pop(ast_build)),
-             newnode(ring_ast_pop(ast_build)));
+    struct AST* left = newnode(ring_ast_pop(ast_build));
+    struct AST* right = newnode(ring_ast_pop(ast_build));
+    return binop_builders[operator.type](left, right);
 }
 
 static struct AST *build_unop(struct ring_ast **ast_build, struct token operator) {
