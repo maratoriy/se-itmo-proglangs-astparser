@@ -5,7 +5,7 @@ TARGET     = parser
 
 all: $(TARGET)
 
-$(TARGET): ast.o main.o tokenizer.o
+$(TARGET): builder.o ast.o main.o tokenizer.o
 	$(LD) -o $@ $^
 
 %.o: %.c
