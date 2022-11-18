@@ -2,8 +2,10 @@
 C parser of infix notation expression to AST tree, its evaluation, RPN printer
 
 In current version:
-  - binary operators:
+  - logical operators:
+    - '&&', '||', '~', '->, '<->'
+  - math operators:
     - '*', '/', '+', '-', '%'
   - unary operators:
-    - '%', '!'
+    - '%', '!'(factorial)
   - brackets '(' and ')'
