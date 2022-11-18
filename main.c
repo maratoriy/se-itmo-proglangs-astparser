@@ -24,15 +24,7 @@ DEFINE_RING_PRINT(token, token_print)
 
 #define RETURN_ERROR(code, msg) return printf(msg), code
 
-const short PRECEDENCES[] = {
-        [TOK_MUL] = 2,
-        [TOK_DIV] = 2,
-        [TOK_MINUS] = 1,
-        [TOK_PLUS] = 1,
-        [TOK_NEG] = 3
-};
-
-typedef struct AST *(binop_builder)(struct AST *left, struct AST *right);
+typedef struct AST* (binop_builder)(struct AST *left, struct AST *right);
 
 static binop_builder *binop_builders[] = {
         [TOK_MUL] = mul,
@@ -41,72 +33,94 @@ static binop_builder *binop_builders[] = {
         [TOK_PLUS] = add
 };
 
-typedef struct AST *(unop_builder)(struct AST* node);
+typedef struct AST* (unop_builder)(struct AST* node);
 
 static unop_builder *unop_builders[] = {
         [TOK_NEG] = neg
 };
 
-struct AST* build_binop(struct ring_ast **ast_build, struct ring_token **ops) {
-    return binop_builders[ring_token_pop(ops).type]
+static struct AST* build_binop(struct ring_ast **ast_build, struct token operator) {
+    return binop_builders[operator.type]
             (newnode(ring_ast_pop(ast_build)),
              newnode(ring_ast_pop(ast_build)));
 }
 
-struct AST* build_unop(struct ring_ast **ast_build, struct ring_token **ops) {
-    return unop_builders[ring_token_pop(ops).type]
+static struct AST* build_unop(struct ring_ast **ast_build, struct token operator) {
+    return unop_builders[operator.type]
             (newnode(ring_ast_pop(ast_build)));
 
 }
 
-struct AST *build_op(struct ring_ast **ast_build, struct ring_token **ops, struct token operator) {
-    if(is_binop(operator)) {
-        return build_binop(ast_build, ops);
-    } else if(is_unop(operator)) {
-        return build_unop(ast_build, ops);
-    } else {
-        return NULL;
-    }
+static struct AST* build_lit(struct ring_ast **ast_stack, struct token operator) {
+    return lit(operator.value);
 }
 
-struct AST *build_ast(char *str) {
+typedef struct AST* (builder)(struct ring_ast **ast_stack, struct token operator);
+
+static builder *builders[] = {
+        [AST_UNOP] = build_unop,
+        [AST_BINOP] = build_binop,
+        [AST_LIT] = build_lit,
+};
+
+static int lit_to_ast_map(struct token tok) {
+    if(tok.type == TOK_LIT) return AST_LIT;
+    if(is_binop(tok)) return AST_BINOP;
+    if(is_unop(tok)) return AST_UNOP;
+    return -1;
+}
+
+static struct AST* build_node(struct ring_ast **ast_stack, struct token tok) {
+    int ast_type = lit_to_ast_map(tok);
+    if(ast_type == -1) return NULL;
+    return builders[lit_to_ast_map(tok)](ast_stack, tok);
+}
+
+const short PRECEDENCES[] = {
+        [TOK_MUL] = 2,
+        [TOK_DIV] = 2,
+        [TOK_MINUS] = 1,
+        [TOK_PLUS] = 1,
+        [TOK_NEG] = 3
+};
+
+struct AST* build_ast(char *str) {
     struct ring_token *tokens = NULL;
     if ((tokens = tokenize(str)) == NULL)
         RETURN_ERROR(NULL, "Tokenization error.\n");
 
-    struct ring_ast *ast_build = NULL;
-    struct ring_token *ops = NULL;
+    ring_token_print(tokens);
+
+    struct ring_ast *ast_stack = NULL;
+    struct ring_token *ops_stack = NULL;
     while (tokens != NULL) {
         struct token tok = ring_token_pop_top(&tokens);
         if (tok.type == TOK_LIT) {
-            ring_push_create(ast, ast_build, *lit(tok.value))
+            ring_ast_push(&ast_stack, *build_node(&ast_stack, tok));
         } else if (is_binop(tok) || is_unop(tok)) {
-            while ((ops != NULL)) {
-                struct token operator = ring_token_last(ops);
-                if(PRECEDENCES[operator.type] < PRECEDENCES[tok.type])
-                    break;
+            while ((ops_stack != NULL) && (PRECEDENCES[ring_token_last(ops_stack).type] >= PRECEDENCES[tok.type])) {
+                struct token operator = ring_token_pop(&ops_stack);
                 if(is_binop(operator) || is_unop(operator)) {
-                    ring_push_create(ast, ast_build, *build_op(&ast_build, &ops, operator));
-                } else {
-                    break;
-                }
+                    ring_ast_push(&ast_stack, *build_node(&ast_stack, operator));
+                } else break;
             }
-            ring_push_create(token, ops, tok);
+            ring_token_push(&ops_stack, tok);
         } else if (tok.type == TOK_OPEN) {
-            ring_push_create(token, ops, tok);
+            ring_token_push(&ops_stack, tok);
         } else if (tok.type == TOK_CLOSE) {
-            while ((ops != NULL) && ring_token_last(ops).type != TOK_OPEN) {
-                ring_push_create(ast, ast_build, *build_op(&ast_build, &ops, ring_token_last(ops)));
+            while ((ops_stack != NULL) && ring_token_last(ops_stack).type != TOK_OPEN) {
+                ring_ast_push(&ast_stack, *build_node(&ast_stack, ring_token_pop(&ops_stack)));
             }
-            ring_token_pop(&ops);
+            ring_token_pop(&ops_stack);
         }
     }
-    while (ops != NULL) {
-        ring_push_create(ast, ast_build, *build_op(&ast_build, &ops, ring_token_last(ops)));
+    while (ops_stack != NULL) {
+        ring_ast_push(&ast_stack, *build_node(&ast_stack, ring_token_pop(&ops_stack)));
     }
 
-    struct AST *result = newnode(ring_ast_pop(&ast_build));
+    struct AST *result = newnode(ring_ast_pop(&ast_stack));
     ring_token_free(&tokens);
+    ring_ast_free(&ast_stack);
 
 
     return result;

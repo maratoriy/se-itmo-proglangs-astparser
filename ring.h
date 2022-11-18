@@ -40,8 +40,6 @@ static type ring_##name##_first(struct ring_##name *ring)             \
 static struct ring_##name *ring_##name##_push(                        \
     struct ring_##name **ring, type value)                            \
 {                                                                     \
-  if (ring == NULL)                                                   \
-    return NULL;                                                      \
   struct ring_##name *item = ring_##name##_create(value);             \
   if (item == NULL)                                                   \
     return NULL;                                                      \
@@ -103,7 +101,6 @@ static void ring_##name##_free(struct ring_##name **ring)             \
   }                                                                   \
 }
 
-#define ring_push_create(name, target, val) (target==NULL) ? target = ring_##name##_create(val) :  ring_##name##_push(& target, val);
 
 #define DEFINE_RING_PRINT(name, printer)                              \
 static void ring_##name##_print(struct ring_##name *ring)             \

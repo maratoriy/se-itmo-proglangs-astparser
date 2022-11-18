@@ -146,7 +146,6 @@ static void p_print_lit(FILE *f, struct AST *ast) {
     fprintf(f, "%"PRId64" ", ast->as_literal.value);
 }
 
-
 static printer *ast_p_printers[] = {
         [AST_BINOP] = p_print_binop, [AST_UNOP] = p_print_unop, [AST_LIT] = p_print_lit};
 
@@ -156,3 +155,4 @@ void p_print_ast(FILE *f, struct AST *ast) {
     else
         fprintf(f, "<NULL>");
 }
+
