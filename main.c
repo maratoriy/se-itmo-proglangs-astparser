@@ -30,13 +30,15 @@ static binop_builder *binop_builders[] = {
         [TOK_MUL] = mul,
         [TOK_DIV] = divide,
         [TOK_MINUS] = sub,
-        [TOK_PLUS] = add
+        [TOK_PLUS] = add,
+        [TOK_MOD] = mod,
 };
 
 typedef struct AST* (unop_builder)(struct AST* node);
 
 static unop_builder *unop_builders[] = {
-        [TOK_NEG] = neg
+        [TOK_NEG] = neg,
+        [TOK_FACT] = fact
 };
 
 static struct AST* build_binop(struct ring_ast **ast_build, struct token operator) {
@@ -73,15 +75,17 @@ static int lit_to_ast_map(struct token tok) {
 static struct AST* build_node(struct ring_ast **ast_stack, struct token tok) {
     int ast_type = lit_to_ast_map(tok);
     if(ast_type == -1) return NULL;
-    return builders[lit_to_ast_map(tok)](ast_stack, tok);
+    return builders[ast_type](ast_stack, tok);
 }
 
 const short PRECEDENCES[] = {
+        [TOK_MOD] = 3,
         [TOK_MUL] = 2,
         [TOK_DIV] = 2,
         [TOK_MINUS] = 1,
         [TOK_PLUS] = 1,
-        [TOK_NEG] = 3
+        [TOK_NEG] = 4,
+        [TOK_FACT] = 4
 };
 
 struct AST* build_ast(char *str) {

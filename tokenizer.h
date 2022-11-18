@@ -10,7 +10,7 @@
 
 struct token {
     enum token_type {
-        TOK_PLUS = 0, TOK_MINUS, TOK_MUL,
+        TOK_PLUS = 0, TOK_MINUS, TOK_MUL, TOK_MOD, TOK_FACT,
         TOK_DIV, TOK_OPEN, TOK_CLOSE, TOK_LIT,
         TOK_NEG, TOK_END, TOK_ERROR
     } type;

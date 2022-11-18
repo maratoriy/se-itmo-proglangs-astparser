@@ -35,8 +35,8 @@ struct AST *binop(enum binop_type type, struct AST *left, struct AST *right) {
 }
 
 static const char *BINOPS[] = {
-        [BIN_PLUS] = "+", [BIN_MINUS] = "-", [BIN_MUL] = "*", [BIN_DIV] = "/"};
-static const char *UNOPS[] = {[UN_NEG] = "-"};
+        [BIN_PLUS] = "+", [BIN_MINUS] = "-", [BIN_MUL] = "*", [BIN_DIV] = "/", [BIN_MOD] = "%"};
+static const char *UNOPS[] = {[UN_NEG] = "-", [UN_FACT] = "!"};
 
 typedef void(printer)(FILE *, struct AST *);
 
@@ -79,8 +79,16 @@ static int64_t parse_neg(struct AST *ast) {
     return -calc_ast(ast);
 }
 
+static int64_t factorial(int64_t n) {
+    return (n == 0) ? 1 : (n * factorial(n-1));
+}
+
+static int64_t parse_fact(struct AST *ast) {
+    return factorial(calc_ast(ast));
+}
+
 static parser *unop_parsers[] = {
-        [UN_NEG] = parse_neg
+        [UN_NEG] = parse_neg, [UN_FACT] = parse_fact
 };
 
 // BINOP TYPE
@@ -100,8 +108,12 @@ DEFINE_SIMPLE_BINOP_PARSER(mul, *)
 
 DEFINE_SIMPLE_BINOP_PARSER(div, /)
 
+DEFINE_SIMPLE_BINOP_PARSER(mod, %)
+
+#undef DEFINE_SIMPLE_BINOP_PARSER
+
 static binop_parser *binop_parsers[] = {
-        [BIN_PLUS] = parse_binop_add, [BIN_MINUS] = parse_binop_sub, [BIN_DIV] = parse_binop_div, [BIN_MUL] = parse_binop_mul
+        [BIN_PLUS] = parse_binop_add, [BIN_MINUS] = parse_binop_sub, [BIN_DIV] = parse_binop_div, [BIN_MUL] = parse_binop_mul, [BIN_MOD] = parse_binop_mod
 };
 
 // AST TYPE

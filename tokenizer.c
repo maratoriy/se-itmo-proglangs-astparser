@@ -9,12 +9,14 @@
 DEFINE_RING(token, struct token)
 
 static const char *SEPARATORS = " \t\n";
-static const int NUM_TOKENS = 6;
+static const int NUM_TOKENS = 8;
 static const char *TOKENS[] = {
         [TOK_PLUS]  = "+",
         [TOK_MINUS] = "-",
         [TOK_MUL]   = "*",
         [TOK_DIV]   = "/",
+        [TOK_MOD]   = "%",
+        [TOK_FACT]  = "!",
         [TOK_OPEN]  ="(",
         [TOK_CLOSE] = ")",
         [TOK_LIT]   = "",
@@ -26,10 +28,12 @@ const char *TOKENS_STR[] = {
         [TOK_MINUS] = "MINUS",
         [TOK_MUL] = "MUL",
         [TOK_DIV] = "DIV",
+        [TOK_MOD] = "MOD",
         [TOK_OPEN]  ="OPEN",
         [TOK_CLOSE] = "CLOSE",
         [TOK_LIT] = "LIT",
         [TOK_NEG] = "NEG",
+        [TOK_FACT] = "FACT",
         [TOK_END] = "END",
         [TOK_ERROR] = "ERROR"
 };
@@ -68,11 +72,11 @@ struct token next_token(char **str) {
 
 int is_binop(struct token token) {
     return token.type == TOK_PLUS || token.type == TOK_MINUS ||
-           token.type == TOK_MUL || token.type == TOK_DIV;
+           token.type == TOK_MUL || token.type == TOK_DIV || token.type == TOK_MOD;
 }
 
 int is_unop(struct token token) {
-    return token.type == TOK_NEG;
+    return token.type == TOK_NEG || token.type == TOK_FACT;
 }
 
 struct ring_token *tokenize(char *str) {
