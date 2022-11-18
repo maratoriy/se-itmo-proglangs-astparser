@@ -14,13 +14,21 @@ struct AST {
     union {
         struct binop {
             enum binop_type {
-                BIN_PLUS, BIN_MINUS, BIN_MUL, BIN_DIV, BIN_MOD
+                BIN_PLUS,
+                BIN_MINUS,
+                BIN_MUL,
+                BIN_DIV,
+                BIN_MOD,
+                BIN_AND,
+                BIN_OR,
+                BIN_IMPL,
+                BIN_BIC
             } type;
             struct AST *left, *right;
         } as_binop;
         struct unop {
             enum unop_type {
-                UN_NEG, UN_FACT
+                UN_NEG, UN_FACT, UN_NEGL
             } type;
             struct AST *operand;
         } as_unop;
@@ -54,6 +62,10 @@ DECLARE_BINOP(mul, MUL)
 DECLARE_BINOP(sub, MINUS)
 DECLARE_BINOP(divide, DIV)
 DECLARE_BINOP(mod, MOD)
+DECLARE_BINOP(and, AND)
+DECLARE_BINOP(or, OR)
+DECLARE_BINOP(implication, IMPL)
+DECLARE_BINOP(bicondition, BIC)
 
 #undef DECLARE_BINOP
 
@@ -63,6 +75,7 @@ static struct AST *fun(struct AST *operand) {                                \
 }
 
 DECLARE_UNOP(neg, NEG)
+DECLARE_UNOP(negl, NEGL)
 DECLARE_UNOP(fact, FACT)
 
 #undef DECLARE_UNOP

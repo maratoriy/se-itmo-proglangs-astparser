@@ -35,8 +35,17 @@ struct AST *binop(enum binop_type type, struct AST *left, struct AST *right) {
 }
 
 static const char *BINOPS[] = {
-        [BIN_PLUS] = "+", [BIN_MINUS] = "-", [BIN_MUL] = "*", [BIN_DIV] = "/", [BIN_MOD] = "%"};
-static const char *UNOPS[] = {[UN_NEG] = "-", [UN_FACT] = "!"};
+        [BIN_PLUS] = "+",
+        [BIN_MINUS] = "-",
+        [BIN_MUL] = "*",
+        [BIN_DIV] = "/",
+        [BIN_MOD] = "%",
+        [BIN_AND] = "&&",
+        [BIN_OR]  = "||",
+        [BIN_IMPL] = "->",
+        [BIN_BIC]  = "<->"
+};
+static const char *UNOPS[] = {[UN_NEG] = "-", [UN_FACT] = "!", [UN_NEGL] = "~"};
 
 typedef void(printer)(FILE *, struct AST *);
 
@@ -79,45 +88,65 @@ typedef int64_t (parser)(struct AST *);
 
 // UNOP TYPE
 
-static int64_t parse_neg(struct AST *ast) {
-    return -calc_ast(ast);
+#define DEFINE_SIMPLE_UNOP_PARSER(unop, operation)        \
+static int64_t parse_unop_##unop(struct AST *operand) { \
+    return operation calc_ast(operand);      \
 }
+
+DEFINE_SIMPLE_UNOP_PARSER(neg, -)
+DEFINE_SIMPLE_UNOP_PARSER(negl, !)
 
 static int64_t factorial(int64_t n) {
     return (n == 0) ? 1 : (n * factorial(n-1));
 }
 
-static int64_t parse_fact(struct AST *ast) {
+static int64_t parse_unop_fact(struct AST *ast) {
     return factorial(calc_ast(ast));
 }
 
 static parser *unop_parsers[] = {
-        [UN_NEG] = parse_neg, [UN_FACT] = parse_fact
+        [UN_NEG] = parse_unop_neg,
+        [UN_FACT] = parse_unop_fact,
+        [UN_NEGL] = parse_unop_negl
 };
 
 // BINOP TYPE
 
 typedef int64_t (binop_parser)(struct AST *, struct AST *);
 
-#define DEFINE_SIMPLE_BINOP_PARSER(operation, operat) \
-static int64_t parse_binop_##operation(struct AST *left, struct AST *right) { \
-    return calc_ast(left) operat calc_ast(right); \
+#define DEFINE_SIMPLE_BINOP_PARSER(binop, operation) \
+static int64_t parse_binop_##binop(struct AST *left, struct AST *right) { \
+    return calc_ast(left) operation calc_ast(right); \
 }
 
 DEFINE_SIMPLE_BINOP_PARSER(add, +)
-
 DEFINE_SIMPLE_BINOP_PARSER(sub, -)
-
 DEFINE_SIMPLE_BINOP_PARSER(mul, *)
-
 DEFINE_SIMPLE_BINOP_PARSER(div, /)
-
 DEFINE_SIMPLE_BINOP_PARSER(mod, %)
+DEFINE_SIMPLE_BINOP_PARSER(and, &&)
+DEFINE_SIMPLE_BINOP_PARSER(or, ||)
 
 #undef DEFINE_SIMPLE_BINOP_PARSER
 
+static int64_t parse_binop_implication(struct AST *left, struct AST *right) {
+    return !calc_ast(left)||calc_ast(right);
+}
+
+static int64_t parse_binop_bicondition(struct AST *left, struct AST *right) {
+    return parse_binop_implication(left, right)&&parse_binop_implication(right, left);
+}
+
 static binop_parser *binop_parsers[] = {
-        [BIN_PLUS] = parse_binop_add, [BIN_MINUS] = parse_binop_sub, [BIN_DIV] = parse_binop_div, [BIN_MUL] = parse_binop_mul, [BIN_MOD] = parse_binop_mod
+        [BIN_PLUS] = parse_binop_add,
+        [BIN_MINUS] = parse_binop_sub,
+        [BIN_DIV] = parse_binop_div,
+        [BIN_MUL] = parse_binop_mul,
+        [BIN_MOD] = parse_binop_mod,
+        [BIN_AND] = parse_binop_and,
+        [BIN_OR]  = parse_binop_or,
+        [BIN_IMPL] = parse_binop_implication,
+        [BIN_BIC] = parse_binop_bicondition
 };
 
 // AST TYPE

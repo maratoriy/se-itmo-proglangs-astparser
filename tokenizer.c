@@ -9,7 +9,7 @@
 DEFINE_RING(token, struct token)
 
 static const char *SEPARATORS = " \t\n";
-static const int NUM_TOKENS = 8;
+static const int NUM_TOKENS = TOK_LIT;
 static const char *TOKENS[] = {
         [TOK_PLUS]  = "+",
         [TOK_MINUS] = "-",
@@ -17,8 +17,15 @@ static const char *TOKENS[] = {
         [TOK_DIV]   = "/",
         [TOK_MOD]   = "%",
         [TOK_FACT]  = "!",
+        [TOK_AND]   = "&&",
+        [TOK_OR]    = "||",
+        [TOK_NEGL]  = "~",
+        [TOK_IMPL]  = "->",
+        [TOK_BIC]   = "<->",
         [TOK_OPEN]  ="(",
         [TOK_CLOSE] = ")",
+
+        // non - reachable in a standard way
         [TOK_LIT]   = "",
         [TOK_NEG]   = "-"
 };
@@ -29,6 +36,11 @@ const char *TOKENS_STR[] = {
         [TOK_MUL] = "MUL",
         [TOK_DIV] = "DIV",
         [TOK_MOD] = "MOD",
+        [TOK_AND] = "AND",
+        [TOK_OR]  = "OR",
+        [TOK_NEGL] = "NEGL",
+        [TOK_IMPL]  = "IMPLICATION",
+        [TOK_BIC]   = "BICONDITION",
         [TOK_OPEN]  ="OPEN",
         [TOK_CLOSE] = "CLOSE",
         [TOK_LIT] = "LIT",
@@ -72,11 +84,11 @@ struct token next_token(char **str) {
 
 int is_binop(struct token token) {
     return token.type == TOK_PLUS || token.type == TOK_MINUS ||
-           token.type == TOK_MUL || token.type == TOK_DIV || token.type == TOK_MOD;
+           token.type == TOK_MUL || token.type == TOK_DIV || token.type == TOK_MOD || token.type == TOK_AND || token.type == TOK_OR || token.type == TOK_IMPL || token.type == TOK_BIC;
 }
 
 int is_unop(struct token token) {
-    return token.type == TOK_NEG || token.type == TOK_FACT;
+    return token.type == TOK_NEG || token.type == TOK_FACT || token.type == TOK_NEGL;
 }
 
 struct ring_token *tokenize(char *str) {
