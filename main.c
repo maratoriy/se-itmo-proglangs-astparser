@@ -102,7 +102,7 @@ struct AST* build_ast(char *str) {
         if (tok.type == TOK_LIT) {
             ring_ast_push(&ast_stack, *build_node(&ast_stack, tok));
         } else if (is_binop(tok) || is_unop(tok)) {
-            while ((ops_stack != NULL) && (PRECEDENCES[ring_token_last(ops_stack).type] >= PRECEDENCES[tok.type])) {
+            while ((ops_stack != NULL) && (ast_stack != NULL) && (PRECEDENCES[ring_token_last(ops_stack).type] >= PRECEDENCES[tok.type])) {
                 struct token operator = ring_token_pop(&ops_stack);
                 if(is_binop(operator) || is_unop(operator)) {
                     ring_ast_push(&ast_stack, *build_node(&ast_stack, operator));
