@@ -3,18 +3,19 @@ CC         = gcc
 LD         = gcc
 TARGET     = parser
 SRC 	   = src
-OBJ    = obj
+OBJ    	   = obj
 
 all: $(TARGET)
 
 $(TARGET): $(OBJ)/builder.o $(OBJ)/ast.o $(OBJ)/main.o $(OBJ)/tokenizer.o
+	mkdir -p $(OBJ)
 	$(LD) -o $@ $^
 
 $(OBJ)/%.o: $(SRC)/%.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 clean: 
-	$(RM) $(TARGET) $(OBJ)/*.o
+	$(RM) -r $(TARGET) $(OBJ)
 
 run:
 	./$(TARGET)
