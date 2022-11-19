@@ -3,8 +3,8 @@
 #include <ctype.h>
 #include <string.h>
 
-#include "ring.h"
-#include "tokenizer.h"
+#include "../include/ring.h"
+#include "../include/tokenizer.h"
 
 DEFINE_RING(token, struct token)
 
@@ -64,14 +64,12 @@ struct token next_token(char **str) {
         return (struct token) {TOK_END, 0};
     }
 
-    /* Serarch for an operation */
     for (i = 0; i < NUM_TOKENS; i++)
         if (strncmp(buf, TOKENS[i], strlen(TOKENS[i])) == 0) {
             *str = buf + strlen(TOKENS[i]);
             return (struct token) {i, 0};
         }
 
-    /* Serach for literals */
     if (isdigit(*buf)) {
         char *str_end;
         int64_t tmp = strtoll(buf, &str_end, 10);

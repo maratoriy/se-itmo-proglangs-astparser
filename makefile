@@ -2,17 +2,19 @@ CFLAGS     = -g -O2 -Wall -Werror -std=c17 -Wno-unused-function -Wdiscarded-qual
 CC         = gcc
 LD         = gcc
 TARGET     = parser
+SRC 	   = src
+OBJ    = obj
 
 all: $(TARGET)
 
-$(TARGET): builder.o ast.o main.o tokenizer.o
+$(TARGET): $(OBJ)/builder.o $(OBJ)/ast.o $(OBJ)/main.o $(OBJ)/tokenizer.o
 	$(LD) -o $@ $^
 
-%.o: %.c
+$(OBJ)/%.o: $(SRC)/%.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 clean: 
-	$(RM) $(TARGET) *.o
+	$(RM) $(TARGET) $(OBJ)/*.o
 
 run:
 	./$(TARGET)

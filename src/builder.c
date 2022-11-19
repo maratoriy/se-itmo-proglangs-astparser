@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-#include "ast.h"
-#include "ring.h"
-#include "tokenizer.h"
+#include "../include/ast.h"
+#include "../include/ring.h"
+#include "../include/tokenizer.h"
 
 void token_print(struct token token) { printf("%s(%" PRId64 ")", TOKENS_STR[token.type], token.value); }
 

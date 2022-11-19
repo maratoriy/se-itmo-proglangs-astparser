@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 
-#include "ast.h"
+#include "../include/ast.h"
 
 struct AST *newnode(struct AST ast) {
     struct AST *const node = malloc(sizeof(struct AST));

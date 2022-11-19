@@ -2,10 +2,10 @@
 
 #include <string.h>
 
-#include "ast.h"
-#include "ring.h"
-#include "tokenizer.h"
-#include "builder.h"
+#include "../include/ast.h"
+#include "../include/ring.h"
+#include "../include/tokenizer.h"
+#include "../include/builder.h"
 
 
 
