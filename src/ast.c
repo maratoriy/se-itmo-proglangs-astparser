@@ -129,12 +129,20 @@ DEFINE_SIMPLE_BINOP_PARSER(or, ||)
 
 #undef DEFINE_SIMPLE_BINOP_PARSER
 
+static int64_t impl(int64_t left, int64_t right) {
+    return !left||right;
+}
+
+static int64_t bicond(int64_t left, int64_t right) {
+    return (!left||right)&&(!right||left);
+}
+
 static int64_t parse_binop_implication(struct AST *left, struct AST *right) {
-    return !calc_ast(left)||calc_ast(right);
+    return impl(calc_ast(left), calc_ast(right));
 }
 
 static int64_t parse_binop_bicondition(struct AST *left, struct AST *right) {
-    return parse_binop_implication(left, right)&&parse_binop_implication(right, left);
+    return bicond(calc_ast(left), calc_ast(right));
 }
 
 static binop_parser *binop_parsers[] = {
