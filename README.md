@@ -11,4 +11,4 @@ In current version:
   - brackets '(' and ')'
 
 To compile: <br/>
-  <code>make parser</code>
+        <code>make parser</code>
