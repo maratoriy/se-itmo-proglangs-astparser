@@ -5,7 +5,7 @@
 #define _LLP_TOKENIZER_H_
 
 #include <inttypes.h>
-
+#include <stdbool.h>
 #include "ring.h"
 
 struct token {
@@ -22,8 +22,8 @@ struct token {
 DECLARE_RING(token, struct token)
 
 struct ring_token *tokenize(char *str);
-int is_binop(struct token);
-int is_unop(struct token);
+bool is_binop(struct token);
+bool is_unop(struct token);
 
 extern const char *TOKENS_STR[];
 

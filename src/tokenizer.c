@@ -80,12 +80,12 @@ struct token next_token(char **str) {
     return (struct token) {TOK_ERROR, 0};
 }
 
-int is_binop(struct token token) {
+bool is_binop(struct token token) {
     return token.type == TOK_PLUS || token.type == TOK_MINUS ||
            token.type == TOK_MUL || token.type == TOK_DIV || token.type == TOK_MOD || token.type == TOK_AND || token.type == TOK_OR || token.type == TOK_IMPL || token.type == TOK_BIC;
 }
 
-int is_unop(struct token token) {
+bool is_unop(struct token token) {
     return token.type == TOK_NEG || token.type == TOK_FACT || token.type == TOK_NEGL;
 }
 
