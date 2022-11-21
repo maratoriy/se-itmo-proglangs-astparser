@@ -16,37 +16,41 @@ static const char *TOKENS[] = {
         [TOK_MUL]   = "*",
         [TOK_DIV]   = "/",
         [TOK_MOD]   = "%",
-        [TOK_FACT]  = "!",
         [TOK_AND]   = "&&",
         [TOK_OR]    = "||",
         [TOK_NEGL]  = "~",
         [TOK_IMPL]  = "->",
         [TOK_BIC]   = "<->",
+        [TOK_FACT]  = "!",
+
         [TOK_OPEN]  ="(",
         [TOK_CLOSE] = ")",
 
-        // non - reachable in a standard way
         [TOK_LIT]   = "",
         [TOK_NEG]   = "-"
 };
 
 const char *TOKENS_STR[] = {
-        [TOK_PLUS] = "PLUS",
+        [TOK_PLUS]  = "PLUS",
         [TOK_MINUS] = "MINUS",
-        [TOK_MUL] = "MUL",
-        [TOK_DIV] = "DIV",
-        [TOK_MOD] = "MOD",
-        [TOK_AND] = "AND",
-        [TOK_OR]  = "OR",
-        [TOK_NEGL] = "NEGL",
+        [TOK_MUL]   = "MUL",
+        [TOK_DIV]   = "DIV",
+        [TOK_MOD]   = "MOD",
+        [TOK_AND]   = "AND",
+        [TOK_OR]    = "OR",
         [TOK_IMPL]  = "IMPLICATION",
         [TOK_BIC]   = "BICONDITION",
-        [TOK_OPEN]  ="OPEN",
+
+        [TOK_NEGL]  = "NEGL",
+        [TOK_FACT]  = "FACT",
+
+        [TOK_OPEN]  = "OPEN",
         [TOK_CLOSE] = "CLOSE",
-        [TOK_LIT] = "LIT",
-        [TOK_NEG] = "NEG",
-        [TOK_FACT] = "FACT",
-        [TOK_END] = "END",
+
+        [TOK_LIT]   = "LIT",
+        [TOK_NEG]   = "NEG",
+
+        [TOK_END]   = "END",
         [TOK_ERROR] = "ERROR"
 };
 

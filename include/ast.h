@@ -84,7 +84,6 @@ void print_ast(FILE *f, struct AST *ast);
 void ast_print(struct AST ast);
 
 int64_t calc_ast(struct AST *ast);
-
 void p_print_ast(FILE *f, struct AST *ast);
 
 #endif

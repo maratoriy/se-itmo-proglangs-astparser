@@ -10,11 +10,32 @@
 
 struct token {
     enum token_type {
-        TOK_BIC = 0, TOK_IMPL, TOK_PLUS, TOK_MINUS, TOK_MUL, TOK_DIV, TOK_MOD, TOK_AND, TOK_OR, TOK_NEGL,
+        // Binary operators
+        TOK_BIC = 0,
+        TOK_IMPL,
+        TOK_OR,
+        TOK_AND,
+        TOK_PLUS,
+        TOK_MINUS,
+        TOK_MUL,
+        TOK_DIV,
+        TOK_MOD,
+
+        // Unary operators
+        TOK_NEGL,
         TOK_FACT,
-        TOK_OPEN, TOK_CLOSE,
-        TOK_LIT, TOK_NEG,
-        TOK_END, TOK_ERROR
+
+        // Brackets
+        TOK_OPEN,
+        TOK_CLOSE,
+
+        // Non - reachable in a standard way
+        TOK_LIT,
+        TOK_NEG,
+
+        // Technical tokens
+        TOK_END,
+        TOK_ERROR
     } type;
     int64_t value;
 };

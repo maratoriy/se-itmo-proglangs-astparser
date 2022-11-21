@@ -72,7 +72,6 @@ static size_t lit_to_ast_map(struct token tok) {
     return -1;
 }
 
-
 static struct AST *build_node(struct ring_ast **ast_stack, struct token tok) {
     size_t ast_type = lit_to_ast_map(tok);
     if (ast_type == -1) return NULL;
