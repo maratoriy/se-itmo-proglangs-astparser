@@ -3,12 +3,12 @@ C parser of infix notation expression to AST tree, its evaluation, RPN printer
 
 In current version:
   - logical operators:
-    - '&&', '||', '~', '->, '<->'
+    - `&&`, `||`, `~`, `->`, `<->`
   - math operators:
-    - '*', '/', '+', '-', '%'
+    - `*`, `/`(div), `+`, `-`, `%`
   - unary math operators:
-    - '-', '!'(factorial)
-  - brackets '(' and ')'
+    - `-`, `!`(factorial)
+  - brackets `(` and `)`
 
 To compile: <br/>
 ```
@@ -16,6 +16,7 @@ make parser
 ```
 
 Example:
+
 Input:
 ```
 (!5/(!2*!(5-2))+!5/(!3*!(5-3)))
