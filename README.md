@@ -10,5 +10,5 @@ In current version:
     - '-', '!'(factorial)
   - brackets '(' and ')'
 
-To compile:
-  make parser
+To compile: <br/>
+  <code>make parser</code>
