@@ -9,3 +9,6 @@ In current version:
   - unary math operators:
     - '-', '!'(factorial)
   - brackets '(' and ')'
+
+To compile:
+  make parser
