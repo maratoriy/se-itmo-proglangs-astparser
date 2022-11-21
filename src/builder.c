@@ -65,7 +65,7 @@ static builder *builders[] = {
         [AST_LIT] = build_lit,
 };
 
-static int lit_to_ast_map(struct token tok) {
+static size_t lit_to_ast_map(struct token tok) {
     if (tok.type == TOK_LIT) return AST_LIT;
     if (is_binop(tok)) return AST_BINOP;
     if (is_unop(tok)) return AST_UNOP;
@@ -73,7 +73,7 @@ static int lit_to_ast_map(struct token tok) {
 }
 
 static struct AST *build_node(struct ring_ast **ast_stack, struct token tok) {
-    int ast_type = lit_to_ast_map(tok);
+    size_t ast_type = lit_to_ast_map(tok);
     if (ast_type == -1) return NULL;
     return builders[ast_type](ast_stack, tok);
 }
