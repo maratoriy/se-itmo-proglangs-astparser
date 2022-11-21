@@ -1,7 +1,7 @@
 # se-itmo-proglangs-astparser
 C parser of infix notation expression to AST tree, its evaluation, RPN printer
 
-In current version:
+## Operators
   - logical operators:
     - `&&`, `||`, `~`, `->`, `<->`
   - math operators:
@@ -10,12 +10,12 @@ In current version:
     - `-`, `!`(factorial)
   - brackets `(` and `)`
 
-To compile: <br/>
+## Compile
 ```
 make parser
 ```
 
-Example:
+## Example
 
 Input:
 ```
